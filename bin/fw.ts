@@ -6,12 +6,12 @@ import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import chalk from 'chalk';
 
-import { findConfigFile, loadConfig, getSettings, expandPath } from './src/config.ts';
-import { Watcher } from './src/watcher.ts';
-import log, { setLogLevel } from './src/logger.ts';
+import { findConfigFile, loadConfig, getSettings, expandPath } from '../src/config.ts';
+import { Watcher } from '../src/watcher.ts';
+import log, { setLogLevel } from '../src/logger.ts';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const pkg = JSON.parse(readFileSync(resolve(__dirname, 'package.json'), 'utf-8'));
+const pkg = JSON.parse(readFileSync(resolve(__dirname, '../package.json'), 'utf-8'));
 
 program
   .name('fw')
@@ -155,7 +155,7 @@ program
     console.log(chalk.bold(`Event:   ${event}\n`));
 
     // Import matcher dynamically to avoid issues with unused import
-    import('./src/matcher.ts').then(({ findMatchingRules }) => {
+    import('../src/matcher.ts').then(({ findMatchingRules }) => {
       const matches = findMatchingRules(normalized, resolvedPath, event);
 
       if (matches.length === 0) {
