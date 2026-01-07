@@ -1,0 +1,36 @@
+# File Watcher Configuration
+# Run with: npm run fw start
+
+rules:
+  # Example: Log new images (test rule)
+  - name: "Log new images"
+    path: ~/Pictures
+    pattern: "*.{jpg,jpeg,png,gif}"
+    events: [add]
+    action: "echo '[{event}] New image: {filepath}'"
+
+  # Example: Backup documents on change
+  - name: "Backup documents"
+    path: ~/Documents
+    pattern: "**/*.{md,txt}"
+    events: [add, change]
+    action: "echo '[{event}] Would backup: {filepath} -> ~/Backups/{filename}'"
+
+  # Example: Critical preprocessing step
+  - name: "Critical preprocessing"
+    path: ~/Downloads
+    pattern: "*.csv"
+    events: [add]
+    action: "echo 'Processing CSV: {filename}'"
+    onFailure: stop  # Stop pipeline if this fails
+
+  # Example: Move processed files (runs after preprocessing)
+  - name: "Archive processed CSVs"
+    path: ~/Downloads
+    pattern: "*.csv"
+    events: [add]
+    action: "echo 'Would archive: {filepath}'"
+
+settings:
+  logLevel: info      # debug | info | warn | error
+  debounceMs: 300     # Milliseconds to wait for file writes to settle

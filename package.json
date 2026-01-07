@@ -1,0 +1,28 @@
+{
+  "name": "file-watcher",
+  "version": "0.1.0",
+  "description": "A CLI tool for watching folders and triggering actions on file changes",
+  "type": "module",
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "bin": {
+    "fw": "./bin/fw.ts"
+  },
+  "scripts": {
+    "start": "node --experimental-strip-types bin/fw.ts",
+    "fw": "node --experimental-strip-types bin/fw.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "chalk": "^5.3.0",
+    "chokidar": "^4.0.0",
+    "commander": "^12.1.0",
+    "js-yaml": "^4.1.0"
+  },
+  "devDependencies": {
+    "@types/js-yaml": "^4.0.9",
+    "@types/node": "^22.0.0",
+    "typescript": "^5.6.0"
+  }
+}
