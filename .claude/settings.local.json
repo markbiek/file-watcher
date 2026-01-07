@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(nvm use:*)",
+      "Bash(mise install:*)",
+      "Bash(mise exec:*)",
+      "Bash(mise trust:*)",
+      "Bash(node --version:*)"
+    ]
+  }
+}
