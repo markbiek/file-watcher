@@ -5,7 +5,8 @@
       "Bash(mise install:*)",
       "Bash(mise exec:*)",
       "Bash(mise trust:*)",
-      "Bash(node --version:*)"
+      "Bash(node --version:*)",
+      "Bash(pgrep:*)"
     ]
   }
 }
