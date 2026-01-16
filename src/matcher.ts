@@ -48,14 +48,14 @@ function expandBraces(pattern: string): string[] {
  */
 function globToRegex(pattern: string): RegExp {
   let regex = pattern
-    // Escape special regex chars (except our glob chars)
-    .replace(/[.+^${}()|[\]\\]/g, '\\$&')
+    // Escape special regex chars (including * and ? which we'll convert to glob patterns)
+    .replace(/[.+^${}()|[\]\\*?]/g, '\\$&')
     // ** matches anything including /
     .replace(/\\\*\\\*/g, '.*')
     // * matches anything except /
     .replace(/\\\*/g, '[^/]*')
     // ? matches single char except /
-    .replace(/\?/g, '[^/]');
+    .replace(/\\\?/g, '[^/]');
 
   // Anchor to end (pattern should match the filename or path suffix)
   return new RegExp(`${regex}$`, 'i');
