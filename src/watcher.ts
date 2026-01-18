@@ -41,8 +41,8 @@ export class Watcher {
       return;
     }
 
-    // Get unique paths to watch
-    const pathsToWatch = [...new Set(this.rules.map((r) => r.path))];
+    // Get unique paths to watch (flatten since each rule can have multiple paths)
+    const pathsToWatch = [...new Set(this.rules.flatMap((r) => r.paths))];
 
     if (pathsToWatch.length === 0) {
       log.warn('No enabled rules to watch');

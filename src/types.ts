@@ -29,7 +29,7 @@ export interface ActionConfig {
  */
 export interface Rule {
   name: string;
-  path: string;
+  path: string | string[];
   pattern: string;
   events?: EventType[];
   action: string | ActionConfig;
@@ -42,7 +42,7 @@ export interface Rule {
  */
 export interface NormalizedRule {
   name: string;
-  path: string;
+  paths: string[];
   pattern: string;
   events: EventType[];
   action: string | ActionConfig;
@@ -80,6 +80,8 @@ export interface ActionContext {
   previousResults: ActionResult[];
   /** Parsed path components for variable substitution */
   pathComponents: PathComponents;
+  /** The specific watched path that matched this file */
+  matchedPath: string;
 }
 
 /**

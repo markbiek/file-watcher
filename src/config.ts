@@ -74,8 +74,25 @@ function validateRule(rule: unknown, index: number): string[] {
     errors.push(`${prefix}: "name" is required and must be a non-empty string`);
   }
 
-  if (typeof r.path !== 'string' || r.path.trim() === '') {
-    errors.push(`${prefix}: "path" is required and must be a non-empty string`);
+  if (r.path === undefined) {
+    errors.push(`${prefix}: "path" is required`);
+  } else if (typeof r.path === 'string') {
+    if (r.path.trim() === '') {
+      errors.push(`${prefix}: "path" must be a non-empty string`);
+    }
+  } else if (Array.isArray(r.path)) {
+    if (r.path.length === 0) {
+      errors.push(`${prefix}: "path" array must not be empty`);
+    } else {
+      for (let i = 0; i < r.path.length; i++) {
+        const p = r.path[i];
+        if (typeof p !== 'string' || p.trim() === '') {
+          errors.push(`${prefix}: "path[${i}]" must be a non-empty string`);
+        }
+      }
+    }
+  } else {
+    errors.push(`${prefix}: "path" must be a string or array of strings`);
   }
 
   if (typeof r.pattern !== 'string' || r.pattern.trim() === '') {
@@ -116,12 +133,22 @@ function validateRule(rule: unknown, index: number): string[] {
 }
 
 /**
+ * Normalize paths to an array and expand each one
+ */
+function normalizePaths(path: string | string[]): string[] {
+  const paths = Array.isArray(path) ? path : [path];
+  // Expand and deduplicate
+  const expanded = paths.map(expandPath);
+  return [...new Set(expanded)];
+}
+
+/**
  * Normalize a rule by applying defaults
  */
 function normalizeRule(rule: Rule): NormalizedRule {
   return {
     name: rule.name,
-    path: expandPath(rule.path),
+    paths: normalizePaths(rule.path),
     pattern: rule.pattern,
     events: rule.events ?? DEFAULT_EVENTS,
     action: rule.action,

@@ -60,7 +60,7 @@ program
     const enabledRules = normalized.filter((r) => r.enabled);
     log.info(`Loaded ${enabledRules.length} enabled rule(s)`);
     for (const rule of enabledRules) {
-      log.debug(`  - ${rule.name}: ${rule.path} [${rule.pattern}]`);
+      log.debug(`  - ${rule.name}: ${rule.paths.join(', ')} [${rule.pattern}]`);
     }
 
     // Create and start watcher
@@ -118,7 +118,7 @@ program
         rule.onFailure === 'stop' ? chalk.yellow(' [critical]') : '';
 
       console.log(`${chalk.cyan(rule.name)} ${status}${failMode}`);
-      console.log(`  Path:    ${rule.path}`);
+      console.log(`  Path:    ${rule.paths.join(', ')}`);
       console.log(`  Pattern: ${rule.pattern}`);
       console.log(`  Events:  ${rule.events.join(', ')}`);
       console.log(`  Action:  ${typeof rule.action === 'string' ? rule.action : JSON.stringify(rule.action)}`);
@@ -165,11 +165,11 @@ program
 
       console.log(chalk.green(`${matches.length} rule(s) would match:\n`));
 
-      for (let i = 0; i < matches.length; i++) {
-        const rule = matches[i];
-        console.log(`${i + 1}. ${chalk.cyan(rule.name)}`);
-        console.log(`   Action: ${typeof rule.action === 'string' ? rule.action : JSON.stringify(rule.action)}`);
-      }
+      matches.forEach((match, i) => {
+        console.log(`${i + 1}. ${chalk.cyan(match.rule.name)}`);
+        console.log(`   Matched path: ${match.matchedPath}`);
+        console.log(`   Action: ${typeof match.rule.action === 'string' ? match.rule.action : JSON.stringify(match.rule.action)}`);
+      });
     });
   });
 

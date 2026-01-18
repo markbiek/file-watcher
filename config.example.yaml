@@ -16,6 +16,16 @@ rules:
     events: [add, change]
     action: "echo '[{event}] Would backup: {filepath} -> ~/Backups/{filename}'"
 
+  # Example: Watch multiple paths with a single rule
+  - name: "Compress images from multiple sources"
+    path:
+      - ~/Pictures
+      - ~/Downloads
+      - /Volumes/external/photos
+    pattern: "*.{jpg,jpeg}"
+    events: [add]
+    action: "echo 'Would compress {filename} from {path}'"
+
   # Example: Critical preprocessing step
   - name: "Critical preprocessing"
     path: ~/Downloads

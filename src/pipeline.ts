@@ -63,12 +63,16 @@ export async function processFileEvent(
     event,
     previousResults: [],
     pathComponents: parsePathComponents(currentPath),
+    matchedPath: '', // Will be set per-rule
   };
 
-  for (const rule of matchingRules) {
+  for (const match of matchingRules) {
+    const { rule, matchedPath } = match;
+
     // Update context for this iteration
     context.filepath = currentPath;
     context.pathComponents = parsePathComponents(currentPath);
+    context.matchedPath = matchedPath;
 
     log.rule(rule.name, currentPath, 'start');
 
@@ -128,7 +132,7 @@ export async function processFileEvent(
 
     // Handle file deletion
     if (result.deleted) {
-      const remainingRules = matchingRules.length - matchingRules.indexOf(rule) - 1;
+      const remainingRules = matchingRules.length - matchingRules.indexOf(match) - 1;
       if (remainingRules > 0) {
         log.warn(
           `Rule "${rule.name}" deleted the file, but ${remainingRules} more ` +

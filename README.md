@@ -81,6 +81,15 @@ rules:
     action: "validate-csv {filepath}"
     onFailure: stop  # Stop pipeline if this fails
 
+  - name: "Compress images from multiple sources"
+    path:
+      - ~/Pictures
+      - ~/Downloads
+      - /Volumes/external/photos
+    pattern: "*.{jpg,jpeg}"
+    events: [add]
+    action: "magick {filepath} -quality 85 {filepath}"
+
 settings:
   logLevel: info    # debug, info, warn, error
   debounceMs: 300   # Wait for writes to settle
@@ -91,12 +100,28 @@ settings:
 | Field | Required | Default | Description |
 |-------|----------|---------|-------------|
 | `name` | Yes | - | Unique identifier for the rule |
-| `path` | Yes | - | Directory to watch (supports `~`) |
+| `path` | Yes | - | Directory or array of directories to watch (supports `~`) |
 | `pattern` | Yes | - | Glob pattern to match files |
 | `events` | No | `[add, change]` | Event types: `add`, `change`, `unlink` |
 | `action` | Yes | - | Shell command or action config |
 | `onFailure` | No | `continue` | `continue` or `stop` |
 | `enabled` | No | `true` | Whether the rule is active |
+
+### Multiple Paths
+
+A single rule can watch multiple directories by specifying `path` as an array:
+
+```yaml
+- name: "Process images from anywhere"
+  path:
+    - ~/Pictures
+    - ~/Downloads
+    - /Volumes/external/photos
+  pattern: "*.jpg"
+  action: "echo 'Found {filename} in {path}'"
+```
+
+When using multiple paths, the `{path}` variable expands to whichever watched directory contained the matched file.
 
 ### Variable Substitution
 
@@ -110,6 +135,7 @@ Use these variables in your action commands:
 | `{basename}` | Filename without extension | `photo` |
 | `{ext}` | Extension only | `jpg` |
 | `{event}` | Event type | `add` |
+| `{path}` | The watched path that matched | `/home/user/Pictures` |
 
 ### Glob Patterns
 

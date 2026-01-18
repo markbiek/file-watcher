@@ -62,46 +62,89 @@ function globToRegex(pattern: string): RegExp {
 }
 
 /**
- * Check if a rule matches a file event
+ * Result of matching a rule to a file
  */
-export function ruleMatches(rule: NormalizedRule, filepath: string, event: EventType): boolean {
-  // Check if rule is enabled
-  if (!rule.enabled) {
-    return false;
-  }
+export interface RuleMatch {
+  rule: NormalizedRule;
+  matchedPath: string;
+}
 
-  // Check if event type matches
-  if (!rule.events.includes(event)) {
-    return false;
-  }
+/**
+ * Check if a filepath matches against a single watched path and pattern
+ */
+function matchesPath(filepath: string, watchedPath: string, pattern: string): boolean {
+  const normalizedFilePath = resolve(filepath);
+  const normalizedWatchedPath = resolve(watchedPath);
 
-  // Check if file is within the watched path
-  const normalizedPath = resolve(filepath);
-  const normalizedRulePath = resolve(rule.path);
-
-  if (!normalizedPath.startsWith(normalizedRulePath)) {
+  // File must be within the watched path
+  if (!normalizedFilePath.startsWith(normalizedWatchedPath + '/') &&
+      normalizedFilePath !== normalizedWatchedPath) {
     return false;
   }
 
   // Get the relative path from the watched directory
-  const relativePath = normalizedPath.slice(normalizedRulePath.length + 1);
+  const relativePath = normalizedFilePath.slice(normalizedWatchedPath.length + 1);
 
   // Check if filename matches the pattern
   const filename = basename(filepath);
 
   // Pattern could match filename only or relative path (for **)
-  return matchGlob(rule.pattern, filename) || matchGlob(rule.pattern, relativePath);
+  return matchGlob(pattern, filename) || matchGlob(pattern, relativePath);
+}
+
+/**
+ * Check if a rule matches a file event and return the matched path
+ *
+ * @returns The matched path or null if no match
+ */
+export function getMatchedPath(rule: NormalizedRule, filepath: string, event: EventType): string | null {
+  // Check if rule is enabled
+  if (!rule.enabled) {
+    return null;
+  }
+
+  // Check if event type matches
+  if (!rule.events.includes(event)) {
+    return null;
+  }
+
+  // Check each path in the rule (first match wins)
+  for (const watchedPath of rule.paths) {
+    if (matchesPath(filepath, watchedPath, rule.pattern)) {
+      return watchedPath;
+    }
+  }
+
+  return null;
+}
+
+/**
+ * Check if a rule matches a file event
+ */
+export function ruleMatches(rule: NormalizedRule, filepath: string, event: EventType): boolean {
+  return getMatchedPath(rule, filepath, event) !== null;
 }
 
 /**
  * Find all rules that match a file event
+ *
+ * @returns Array of matches, each containing the rule and which path matched
  */
 export function findMatchingRules(
   rules: NormalizedRule[],
   filepath: string,
   event: EventType
-): NormalizedRule[] {
-  return rules.filter((rule) => ruleMatches(rule, filepath, event));
+): RuleMatch[] {
+  const matches: RuleMatch[] = [];
+
+  for (const rule of rules) {
+    const matchedPath = getMatchedPath(rule, filepath, event);
+    if (matchedPath !== null) {
+      matches.push({ rule, matchedPath });
+    }
+  }
+
+  return matches;
 }
 
 /**

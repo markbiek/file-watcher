@@ -53,14 +53,20 @@ export class ShellAction extends Action {
   /**
    * Interpolate variables in the command string
    */
-  private interpolate(command: string, components: PathComponents, event: string): string {
+  private interpolate(
+    command: string,
+    components: PathComponents,
+    event: string,
+    matchedPath: string
+  ): string {
     return command
       .replace(/\{filepath\}/g, components.filepath)
       .replace(/\{dir\}/g, components.dir)
       .replace(/\{filename\}/g, components.filename)
       .replace(/\{basename\}/g, components.basename)
       .replace(/\{ext\}/g, components.ext)
-      .replace(/\{event\}/g, event);
+      .replace(/\{event\}/g, event)
+      .replace(/\{path\}/g, matchedPath);
   }
 
   /**
@@ -99,8 +105,8 @@ export class ShellAction extends Action {
   }
 
   async execute(context: ActionContext): Promise<ActionResult> {
-    const { filepath, pathComponents, event } = context;
-    const interpolatedCommand = this.interpolate(this.command, pathComponents, event);
+    const { filepath, pathComponents, event, matchedPath } = context;
+    const interpolatedCommand = this.interpolate(this.command, pathComponents, event, matchedPath);
 
     log.debug(`Executing: ${interpolatedCommand}`);
 
