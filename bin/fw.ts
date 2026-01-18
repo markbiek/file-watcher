@@ -165,11 +165,11 @@ program
 
       console.log(chalk.green(`${matches.length} rule(s) would match:\n`));
 
-      matches.forEach((match, i) => {
+      for (const [i, match] of matches.entries()) {
         console.log(`${i + 1}. ${chalk.cyan(match.rule.name)}`);
         console.log(`   Matched path: ${match.matchedPath}`);
         console.log(`   Action: ${typeof match.rule.action === 'string' ? match.rule.action : JSON.stringify(match.rule.action)}`);
-      });
+      }
     });
   });
 

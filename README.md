@@ -137,6 +137,11 @@ Use these variables in your action commands:
 | `{event}` | Event type | `add` |
 | `{path}` | The watched path that matched | `/home/user/Pictures` |
 
+**Note:** Always quote variables in shell commands to handle paths with spaces:
+```yaml
+action: 'convert "{filepath}" -resize 800x600 "{dir}/resized/{filename}"'
+```
+
 ### Glob Patterns
 
 - `*` - Match any characters except `/`

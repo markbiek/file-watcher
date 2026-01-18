@@ -77,8 +77,13 @@ function matchesPath(filepath: string, watchedPath: string, pattern: string): bo
   const normalizedWatchedPath = resolve(watchedPath);
 
   // File must be within the watched path
-  if (!normalizedFilePath.startsWith(normalizedWatchedPath + '/') &&
-      normalizedFilePath !== normalizedWatchedPath) {
+  // Handle root path specially since '/' + '/' = '//' which won't match
+  const isWithinPath = normalizedWatchedPath === '/'
+    ? true
+    : normalizedFilePath === normalizedWatchedPath ||
+      normalizedFilePath.startsWith(normalizedWatchedPath + '/');
+
+  if (!isWithinPath) {
     return false;
   }
 
