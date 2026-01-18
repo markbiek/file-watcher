@@ -6,7 +6,8 @@
       "Bash(mise exec:*)",
       "Bash(mise trust:*)",
       "Bash(node --version:*)",
-      "Bash(pgrep:*)"
+      "Bash(pgrep:*)",
+      "Skill(create-commit)"
     ]
   }
 }
