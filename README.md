@@ -59,6 +59,8 @@ Or specify explicitly with `-c /path/to/config.yaml`
 
 ### Example Config
 
+_Note: Claude Code is really good at writing rules!_
+
 ```yaml
 rules:
   - name: "Process new images"
