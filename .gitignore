@@ -64,3 +64,6 @@ fw.yaml
 fw.yml
 .fw.yaml
 .fw.yml
+
+# User-specific plans
+plans/
