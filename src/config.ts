@@ -22,7 +22,7 @@ const DEFAULT_CONFIG_PATHS = [
 ];
 
 const DEFAULT_EVENTS: EventType[] = [EventType.Add, EventType.Change];
-const DEFAULT_DEBOUNCE_MS = 300;
+const DEFAULT_DEBOUNCE_MS = 2000;
 
 /**
  * Expand ~ to home directory
