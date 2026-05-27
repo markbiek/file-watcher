@@ -108,8 +108,9 @@ export class ShellAction extends Action {
       return null;
     }
 
-    // Shell metacharacters mean the path we parsed isn't the real destination
-    if (/[$`*?]/.test(destination)) {
+    // Shell metacharacters (and a leading ~) mean the path we parsed isn't the
+    // real destination — the shell expands them at runtime, we only see the text
+    if (/[$`*?]/.test(destination) || destination.startsWith('~')) {
       return null;
     }
 
