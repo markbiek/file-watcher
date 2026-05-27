@@ -93,15 +93,27 @@ export class ShellAction extends Action {
   }
 
   /**
-   * Try to extract the destination path from a mv command
+   * Try to extract the destination path from a mv command.
+   *
+   * Returns null when the destination can't be resolved statically — most
+   * importantly when it contains shell expansions like $(...), backticks, or
+   * $VAR, since we only see the command text and can't know what the shell
+   * produced at runtime.
    */
   private extractMoveDestination(command: string): string | null {
     // Simple heuristic: look for "mv source dest" pattern
     const mvMatch = command.match(/\bmv\s+(?:-[a-z]+\s+)*["']?([^"'\s]+)["']?\s+["']?([^"'\s]+)["']?/i);
-    if (mvMatch?.[2]) {
-      return mvMatch[2];
+    const destination = mvMatch?.[2];
+    if (!destination) {
+      return null;
     }
-    return null;
+
+    // Shell metacharacters mean the path we parsed isn't the real destination
+    if (/[$`*?]/.test(destination)) {
+      return null;
+    }
+
+    return destination;
   }
 
   async execute(context: ActionContext): Promise<ActionResult> {
@@ -153,7 +165,9 @@ export class ShellAction extends Action {
               return successResult(filepath, { newFilepath: destination });
             }
           }
-          // Couldn't determine destination
+          // File left the source but we can't determine where it went (e.g.
+          // a dynamic shell destination). Stop tracking it through the pipeline.
+          log.info(`File moved out of ${filepath} (destination not statically determinable)`);
           return successResult(filepath, { deleted: true });
         }
       }
