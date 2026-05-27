@@ -12,7 +12,7 @@ A cross-platform CLI tool that watches folders for file changes and triggers con
 |-----------|--------|-----------|
 | Runtime | Node.js v24+ | Native TypeScript support, strong async/event model |
 | TypeScript | Native (--experimental-strip-types) | Zero build step, direct .ts execution |
-| File watching | chokidar | Battle-tested, handles FSEvents (macOS) and inotify (Linux) seamlessly |
+| File watching | chokidar 3 (pinned, not 4) | Battle-tested, handles FSEvents (macOS) and inotify (Linux) seamlessly. See "Why chokidar 3, not 4" below |
 | CLI framework | commander | Mature, clean API |
 | Config format | YAML (js-yaml) | Human-readable, supports comments |
 | Colored output | chalk | Chainable API, good ecosystem |
@@ -23,6 +23,29 @@ A cross-platform CLI tool that watches folders for file changes and triggers con
 - **Python**: Viable (watchdog library), but developer more fluent in Node.js
 - **Go/Rust**: Would provide single binary distribution, but slower iteration for a personal tool
 - **tsx**: Considered as fallback if native TS limitations became problematic (didn't happen)
+
+### Why chokidar 3, not 4
+
+The `chokidar` dependency is pinned to `^3.6.0`. Do **not** upgrade to v4 without
+revisiting this.
+
+chokidar 4 dropped the `fsevents` native binding and watches each entry via
+kqueue, which holds roughly **one open file descriptor per watched file**. With
+the real config (Downloads + an external volume + a large notes tree) that was
+~11,500 open fds. When an action spawns a child process (`mv`, `magick`, etc.),
+Node has to manage that entire fd set, and while chokidar's watcher thread churns
+those descriptors `posix_spawn` intermittently references one mid-close and fails
+with **`spawn EBADF`**. The failure probability scales with the fd count, so it
+hit reliably in practice.
+
+chokidar 3 uses FSEvents on macOS (one stream per root) — ~17 fds total for the
+same config — which eliminates the race entirely. Its API is identical for what
+`src/watcher.ts` uses (`add`/`change`/`unlink`/`ready`, `awaitWriteFinish`, and a
+RegExp `ignored`), so the downgrade required no source changes.
+
+Note: the `ignored` option behaves differently between versions (v3 runs it
+through anymatch; v4 expects functions/anymatch-without-globs). The current
+RegExp works in both, but a future re-upgrade attempt must recheck it.
 
 ### Native TypeScript Constraints
 
