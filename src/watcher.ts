@@ -19,8 +19,7 @@ interface PendingEvent {
 
 /**
  * macOS metadata/system directories found on mounted volumes. Watching them
- * fails with EACCES, spams the logs, and the resulting fd churn on libuv's
- * FSEvents thread widens the window for "spawn EBADF" failures in actions.
+ * fails with EACCES and spams the logs, so skip them.
  */
 const IGNORED_PATHS =
   /(?:^|\/)\.(?:Trashes|TemporaryItems|DocumentRevisions-V100|Spotlight-V100|fseventsd)(?:\/|$)/;
