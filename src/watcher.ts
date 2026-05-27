@@ -18,6 +18,14 @@ interface PendingEvent {
 }
 
 /**
+ * macOS metadata/system directories found on mounted volumes. Watching them
+ * fails with EACCES, spams the logs, and the resulting fd churn on libuv's
+ * FSEvents thread widens the window for "spawn EBADF" failures in actions.
+ */
+const IGNORED_PATHS =
+  /(?:^|\/)\.(?:Trashes|TemporaryItems|DocumentRevisions-V100|Spotlight-V100|fseventsd)(?:\/|$)/;
+
+/**
  * File watcher that monitors configured paths and triggers rule pipelines
  */
 export class Watcher {
@@ -93,6 +101,7 @@ export class Watcher {
       const watcher = chokidar.watch(watchPath, {
         persistent: true,
         ignoreInitial: !this.options.processExisting,
+        ignored: IGNORED_PATHS,
         followSymlinks: true,
         awaitWriteFinish: {
           stabilityThreshold: this.options.debounceMs,
