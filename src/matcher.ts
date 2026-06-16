@@ -31,6 +31,10 @@ function expandBraces(pattern: string): string[] {
   }
 
   const [fullMatch, alternatives] = braceMatch;
+  if (alternatives === undefined) {
+    return [pattern];
+  }
+
   const parts = alternatives.split(',');
   const results: string[] = [];
 

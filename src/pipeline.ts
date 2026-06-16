@@ -1,4 +1,3 @@
-import { access, constants } from 'node:fs/promises';
 import type { NormalizedRule, EventType, ActionContext, ActionResult } from './types.ts';
 import { FailureMode } from './types.ts';
 import { findMatchingRules, parsePathComponents } from './matcher.ts';
@@ -15,18 +14,6 @@ export interface PipelineResult {
   finalPath?: string;
   stoppedEarly: boolean;
   stopReason?: string;
-}
-
-/**
- * Check if a file exists at the given path
- */
-async function fileExists(filepath: string): Promise<boolean> {
-  try {
-    await access(filepath, constants.F_OK);
-    return true;
-  } catch {
-    return false;
-  }
 }
 
 /**

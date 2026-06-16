@@ -96,7 +96,7 @@ export class Watcher {
    * Watch a single path
    */
   private async watchPath(watchPath: string): Promise<void> {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       const watcher = chokidar.watch(watchPath, {
         persistent: true,
         ignoreInitial: !this.options.processExisting,

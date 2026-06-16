@@ -25,12 +25,12 @@ export class ShellAction extends Action {
   private cwd?: string;
   private timeout: number;
 
-  constructor(config: ShellActionConfig | string) {
+  constructor(config: ActionConfig | string) {
     // Handle shorthand string syntax
     const normalized: ShellActionConfig =
       typeof config === 'string'
         ? { type: 'shell', command: config }
-        : config;
+        : (config as ShellActionConfig);
 
     super(normalized);
     this.command = normalized.command;
