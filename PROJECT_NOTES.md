@@ -226,10 +226,10 @@ file-watcher/
 ## Running the Project
 
 ```bash
-npm install
+pnpm install
 cp config.example.yaml fw.yaml
 # Edit fw.yaml with your rules
-npm run fw start
+pnpm run fw start
 ```
 
 ## Testing Notes
@@ -237,8 +237,8 @@ npm run fw start
 The `fw test <filepath>` command is useful for debugging rule matching without triggering actions. Example:
 
 ```bash
-npm run fw test ~/Pictures/photo.jpg
-npm run fw test ~/Pictures/photo.jpg -- -e change
+pnpm run fw test ~/Pictures/photo.jpg
+pnpm run fw test ~/Pictures/photo.jpg -- -e change
 ```
 
 ## Design Principles

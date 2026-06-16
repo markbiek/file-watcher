@@ -11,12 +11,12 @@ Read `PROJECT_NOTES.md` for full architecture details, design decisions, and rat
 ## Quick Reference
 
 ```bash
-npm install              # Install dependencies
-npm run fw start         # Start watcher
-npm run fw start -- -v   # Verbose mode
-npm run fw list          # Show rules
-npm run fw test <file>   # Test rule matching
-npm run typecheck        # Run tsc --noEmit
+pnpm install              # Install dependencies
+pnpm run fw start         # Start watcher
+pnpm run fw start -- -v   # Verbose mode
+pnpm run fw list          # Show rules
+pnpm run fw test <file>   # Test rule matching
+pnpm run typecheck        # Run tsc --noEmit
 ```
 
 ## Communication Style
@@ -197,12 +197,12 @@ return failureResult(filepath, 'Error message');
 
 2. Run with verbose logging:
    ```bash
-   npm run fw start -- -c test-config.yaml -v
+   pnpm run fw start -- -c test-config.yaml -v
    ```
 
 3. Test rule matching without execution:
    ```bash
-   npm run fw test /tmp/test-watch/file.txt
+   pnpm run fw test /tmp/test-watch/file.txt
    ```
 
 ## Common Tasks
