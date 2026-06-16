@@ -9,43 +9,43 @@ A CLI tool for watching folders and triggering actions when files change.
 ## Installation
 
 ```bash
-npm install
+pnpm install
 ```
 
 ## Quick Start
 
 1. Create a config file:
    ```bash
-   npm run fw init
+   pnpm run fw init
    ```
 
 2. Edit `fw.yaml` to configure your rules
 
 3. Start watching:
    ```bash
-   npm run fw start
+   pnpm run fw start
    ```
 
 ## CLI Commands
 
 ```bash
 # Start watching (foreground)
-npm run fw start
-npm run fw start -- -c /path/to/config.yaml  # Custom config
-npm run fw start -- -v                        # Verbose mode
+pnpm run fw start
+pnpm run fw start -- -c /path/to/config.yaml  # Custom config
+pnpm run fw start -- -v                        # Verbose mode
 
 # List configured rules
-npm run fw list
+pnpm run fw list
 
 # Test which rules match a file
-npm run fw test ~/Pictures/photo.jpg
-npm run fw test ~/Pictures/photo.jpg -- -e change  # Simulate change event
+pnpm run fw test ~/Pictures/photo.jpg
+pnpm run fw test ~/Pictures/photo.jpg -- -e change  # Simulate change event
 
 # Validate config file
-npm run fw config -- --validate
+pnpm run fw config -- --validate
 
 # Create sample config
-npm run fw init
+pnpm run fw init
 ```
 
 ## Configuration

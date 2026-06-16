@@ -1,5 +1,5 @@
 # File Watcher Configuration
-# Run with: npm run fw start
+# Run with: pnpm run fw start
 
 rules:
   # Example: Log new images (test rule)
